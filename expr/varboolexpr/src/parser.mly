@@ -14,6 +14,15 @@ open Ast
 %token OR
 %token EOF
 
+(* tokens for declarations *)
+(* If an OCaml type t is present, then these tokens are considered 
+   to carry a semantic value of type t... *)
+%token <string> ID
+%token LET
+%token SEMICOLON
+%token EQ
+%token IN
+
 (* priorities of the tokens
    from lower to higher
    we use "ELSE" to define the priority of the if construct
@@ -25,12 +34,26 @@ open Ast
 %nonassoc AND
 %nonassoc NOT
 
-%start <boolExpr> prog
+%start <boolProg> prog
 
 %%
 
 prog:
-  | e = expr; EOF { e }
+  | d = declaration; e = expr; EOF { (d,e) }
+  | e = expr; EOF { ([],e) }
+;
+
+binding:
+  | x = ID; EQ; e = expr; { (x,e) }
+;
+
+binding_list:
+  | h = binding; SEMICOLON; t = binding_list; { h::t }
+  | b = binding; IN; { [b] }
+;
+
+declaration:
+  | LET; d = binding_list; { d }
 ;
 
 expr:
@@ -41,5 +64,5 @@ expr:
   | e1 = expr; AND; e2 = expr; { And(e1, e2) }
   | e1 = expr; OR; e2 = expr; { Or(e1, e2) }
   | LPAREN; e=expr; RPAREN {e}
+  | x = ID { Var x }
 ;
-
