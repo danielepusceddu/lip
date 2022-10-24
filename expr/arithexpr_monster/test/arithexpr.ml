@@ -1,4 +1,5 @@
 open ArithexprLib.Main
+open ArithexprLib.Ast
 
 (* wrapping results for testing *)
 

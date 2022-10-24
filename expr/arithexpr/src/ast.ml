@@ -1,18 +1,11 @@
-type nat = 
-  Zero
-| Succ of nat
-| Pred of nat
-;;
-
-type boolExpr =
+type expr =
     True
   | False
-  | Not of boolExpr
-  | And of boolExpr * boolExpr
-  | Or of boolExpr * boolExpr
-  | If of boolExpr * boolExpr * boolExpr
-  | IsZero of nat
-;;
-
-type expr = BoolExpr of boolExpr | NatExpr of nat;;
-type exprval = Bool of bool | Nat of int;;
+  | Not of expr
+  | And of expr * expr
+  | Or of expr * expr
+  | If of expr * expr * expr
+  | Zero
+  | Succ of expr
+  | Pred of expr
+  | IsZero of expr
