@@ -1,3 +1,6 @@
+### Monster
+This directory contains a bad solution for `arithexpr`. The type checking is actually implemented in the parser... This is a horrible solution: it does not scale with many types, it does not allow the programmer to define new types (?), adding variables would not be doable.
+
 # Arithmetic expressions with dynamic type checking
 
 Extend the language of [boolean expressions](../andboolexpr) with arithmetic expressions on natural numbers,
