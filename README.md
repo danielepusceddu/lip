@@ -42,7 +42,9 @@ Look [here](install-ocaml) for minimal instructions.
 
 1. [A minimal language of boolean expressions](expr/boolexpr)
 1. [Boolean expressions with not, and, or](expr/andboolexpr)
-1. [Arithmetic expressions with dynamic type checking](expr/arithexpr)
+1. [Typed arithmetic expressions with dynamic type checking](expr/arithexpr)
+1. [Typed arithmetic expressions with static type checking](expr/sarithexpr)
+1. [Untyped arithmetic expressions](expr/uarithexpr)
 1. [Boolean expressions with propositional variables](expr/varboolexpr)
 
 ## References
