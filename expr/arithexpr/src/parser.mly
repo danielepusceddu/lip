@@ -14,6 +14,11 @@ open Ast
 %token OR
 %token EOF
 
+%token ZERO
+%token SUCC
+%token PRED
+%token ISZERO
+
 (* priorities of the tokens
    from lower to higher
    we use "ELSE" to define the priority of the if construct
@@ -23,9 +28,9 @@ open Ast
 %nonassoc ELSE
 %nonassoc OR
 %nonassoc AND
-%nonassoc NOT
+%right NOT SUCC PRED ISZERO
 
-%start <boolExpr> prog
+%start <expr> prog
 
 %%
 
@@ -40,6 +45,12 @@ expr:
   | NOT; e = expr; { Not(e) }
   | e1 = expr; AND; e2 = expr; { And(e1, e2) }
   | e1 = expr; OR; e2 = expr; { Or(e1, e2) }
+
+  | ZERO; { Zero }
+  | SUCC; e = expr; { Succ(e) }
+  | PRED; e = expr; { Pred(e) }
+  | ISZERO; e = expr; {IsZero(e) }
+
   | LPAREN; e=expr; RPAREN {e}
 ;
 
