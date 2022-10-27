@@ -31,6 +31,79 @@ let rec string_of_expr = function
   | IsZero(e) -> "iszero("^(string_of_expr e)^")"
 ;;
 
+type exprtype = BoolT | NatT
+exception TypeError of string
+
+let string_of_type = function
+    BoolT -> "Bool"
+  | NatT -> "Nat"
+;;
+
+let err_msg e t t' = 
+  Printf.sprintf "%s has type %s but type %s was expected" (string_of_expr e) (string_of_type t) (string_of_type t')
+;;
+
+let rec typecheck expr = 
+  match expr with
+      True -> BoolT
+    | False -> BoolT
+    | Zero -> NatT
+
+    | And(e1, e2) -> 
+        let e1t = typecheck e1 in
+        let e2t = typecheck e2 in
+        if not (e1t = BoolT) then
+          raise (TypeError(err_msg e1 e1t BoolT))
+        else if not (e2t = BoolT) then
+          raise (TypeError((err_msg e2 e2t BoolT)))
+        else BoolT
+        
+    | Or(e1, e2) -> 
+      let e1t = typecheck e1 in
+      let e2t = typecheck e2 in
+      if not (e1t = BoolT) then
+        raise (TypeError((err_msg e1 e1t BoolT)))
+      else if not (e2t = BoolT) then
+        raise (TypeError((err_msg e2 e2t BoolT)))
+      else BoolT
+
+    | Not(e1) -> 
+      let e1t = typecheck e1 in
+      if not (e1t = BoolT) then
+        raise (TypeError((err_msg e1 e1t BoolT)))
+      else BoolT
+
+    | If(e1, e2, e3) -> 
+      let e1t = typecheck e1 in
+      let e2t = typecheck e2 in
+      let e3t = typecheck e3 in
+      if not (e1t = BoolT) then
+        raise (TypeError((err_msg e1 e1t BoolT)))
+      else if not (e2t = BoolT) then
+        raise (TypeError((err_msg e2 e2t BoolT)))
+      else if not (e3t = BoolT) then
+        raise (TypeError((err_msg e3 e3t BoolT)))
+      else BoolT
+
+    | Succ(e1) -> 
+      let e1t = typecheck e1 in
+      if not (e1t = NatT) then
+        raise (TypeError((err_msg e1 e1t NatT)))
+      else NatT
+
+    | Pred(e1) -> 
+      let e1t = typecheck e1 in
+      if not (e1t = NatT) then
+        raise (TypeError((err_msg e1 e1t NatT)))
+      else NatT
+
+    | IsZero(e1) -> 
+      let e1t = typecheck e1 in
+      if not (e1t = NatT) then
+        raise (TypeError((err_msg e1 e1t NatT)))
+      else BoolT
+    ;;
+
 let parse (s : string) : expr =
   let lexbuf = Lexing.from_string s in
   let ast = Parser.prog Lexer.read lexbuf in
