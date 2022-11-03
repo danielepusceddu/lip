@@ -39,8 +39,8 @@ prog:
 ;
 
 expr:
-  | TRUE { True }
-  | FALSE { False }
+  | TRUE { Succ(Zero) }
+  | FALSE { Zero }
   | IF; e1 = expr; THEN; e2 = expr; ELSE; e3 = expr; { If(e1, e2, e3) }
   | NOT; e = expr; { Not(e) }
   | e1 = expr; AND; e2 = expr; { And(e1, e2) }
