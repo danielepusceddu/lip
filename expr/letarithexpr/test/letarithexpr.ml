@@ -56,8 +56,17 @@ let%test _ =
     true
     (oktests @ errtests)
 
-
 (* test small-step *)
+
+let rec last = function 
+  | [] -> failwith "Empty list"
+  | [x] -> x
+  | _::t -> last t
+;;
+
+let eval_smallstep expr =
+  try Some (eval_simple (last (trace expr))) with _ -> None
+;;
 
 let weval_smallstep e = match eval_smallstep e with
     None -> Error

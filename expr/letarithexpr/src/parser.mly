@@ -19,12 +19,18 @@ open Ast
 %token PRED
 %token ISZERO
 
+%token <string> ID
+%token LET
+%token IN
+%token EQ
+
 (* priorities of the tokens
    from lower to higher
    we use "ELSE" to define the priority of the if construct
    because the only possible ambiguity with the if is
    whether the expr after ELSE "belongs" to the ELSE or to the next operator
    (see production rules for expr below) *)
+%nonassoc IN
 %nonassoc ELSE
 %nonassoc OR
 %nonassoc AND
@@ -52,5 +58,8 @@ expr:
   | ISZERO; e = expr; {IsZero(e) }
 
   | LPAREN; e=expr; RPAREN {e}
+
+  | LET; x = ID; EQ; e1=expr; IN; e2=expr; { Let(x,e1,e2) }
+  | x = ID; { Var(x) }
 ;
 
