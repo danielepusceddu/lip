@@ -214,20 +214,41 @@ exception NoRuleApplies
 (**********************************************************************
  trace1 : int -> term -> term * int
 
- Usage: trace1 vars t performs a step of the small-step call-by-value semantics
+ Usage: trace1 vars t performs a step of the small-step normal order semantics
 
  Pre:  xk does not occur in t, for all k>=vars
  **********************************************************************)
 
+(* 
+t -> t'
+--------------------- [NO-Abs]
+fun x. t -> fun x. t'
+
+------------------------------ [NO-AppAbs]
+(fun x. t1) t2 -> [x -> t2] t1
+
+t1 -> t1'
+--------------- [NO-App1]
+t1 t2 -> t1' t2
+
+t2 -> t2' 
+--------------- [NO-App2]
+t1 t2 -> t1 t2'
+*)
 let rec trace1 vars t = match t with
-  | App(Abs(x,t1), v2) when is_val v2 -> subst x v2 vars t1
-  | App(v1,t2) when is_val v1 ->
-      let (t2',vars') = trace1 vars t2 in
-      (App(v1,t2'),vars')
-  | App(t1,t2) -> 
-      let (t1',vars') = trace1 vars t1 in 
-      (App(t1',t2), vars')
-  | _ -> raise NoRuleApplies
+  | Abs(x, t) -> 
+      let (t',vars') = trace1 vars t in
+      (Abs(x, t'), vars')
+  | App(Abs(x,t1), t2) -> 
+      let (t1',vars') = subst x t2 vars t1 in
+      (t1',vars')
+  | App(t1,t2) -> (try
+        let (t1',vars') = trace1 vars t1 in 
+        (App(t1',t2), vars')
+      with NoRuleApplies -> 
+        let (t2',vars') = trace1 vars t2 in 
+        (App(t1,t2'), vars'))
+  | _ -> raise NoRuleApplies (* | could be associated to with *)
 ;;
 
 
