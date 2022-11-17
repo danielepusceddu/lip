@@ -2,6 +2,16 @@ open Ast
 
 let rec string_of_term = function
     Var x -> x
+  | t when t = t_id -> s_id
+  | t when t = t_omega -> s_omega
+  | t when t = t_tru -> s_tru
+  | t when t = t_fls -> s_fls
+  | t when t = t_ift -> s_ift
+  | t when t = t_and -> s_and
+  | t when t = t_pair -> s_pair
+  | t when t = t_fst -> s_fst
+  | t when t = t_snd -> s_snd
+  | t when t = t_add -> s_add
   | Abs(x,t) -> "fun " ^ x ^ ". " ^ string_of_term t
   | App(Var x,Var y) -> x ^ " " ^ y
   | App(Var x,t2) -> x ^ " (" ^ string_of_term t2 ^ ")"
