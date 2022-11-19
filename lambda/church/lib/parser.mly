@@ -24,9 +24,8 @@ open Ast
 %start <term> prog
 
 %nonassoc DOT ABS
-%nonassoc LPAREN VAR 
+%nonassoc LPAREN VAR AND TRU FLS IFT PAIR FST SND NUM SCC ADD ID OMEGA
 %left APP
-
 %%
 
 prog:
@@ -37,7 +36,6 @@ term:
   | x = VAR { Var x }
   | ABS; x = VAR; DOT; t = term { Abs(x,t) }
   | LPAREN; t=term; RPAREN { t }
-  | t1=term; t2=term { App(t1,t2) } %prec APP
   | TRU; { t_tru }
   | FLS; { t_fls }
   | IFT; { t_ift }
@@ -50,4 +48,5 @@ term:
   | ID { t_id }
   | AND { t_and }
   | OMEGA { t_omega }
+  | t1=term; t2=term { App(t1,t2) } %prec APP
 ;
