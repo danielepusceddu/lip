@@ -2,18 +2,18 @@ open Ast
 
 let rec string_of_term = function
     Var x -> x
-  | t when t = t_id -> s_id
-  | t when t = t_omega -> s_omega
-  | t when t = t_tru -> s_tru
-  | t when t = t_fls -> s_fls
-  | t when t = t_ift -> s_ift
-  | t when t = t_and -> s_and
-  | t when t = t_pair -> s_pair
-  | t when t = t_fst -> s_fst
-  | t when t = t_snd -> s_snd
-  | t when t = t_add -> s_add
+  | t when t = t_id -> "id"
+  | t when t = t_omega -> "omega"
+  | t when t = t_tru -> "tru"
+  | t when t = t_fls -> "fls"
+  | t when t = t_ift -> "s_ift"
+  | t when t = t_and -> "and"
+  | t when t = t_pair -> "pair"
+  | t when t = t_fst -> "fst"
+  | t when t = t_snd -> "snd"
+  | t when t = t_add -> "add"
   | Abs(x,t) -> "fun " ^ x ^ ". " ^ string_of_term t
-  | App(Var x,Var y) -> x ^ " " ^ y
+  | App(Var x,Var y) -> "(" ^ x ^ " " ^ y ^ ")"
   | App(Var x,t2) -> x ^ " (" ^ string_of_term t2 ^ ")"
   | App(t1,Var x) -> "(" ^ string_of_term t1 ^ ") " ^ x
   | App(t1,t2) -> "(" ^ string_of_term t1 ^ ") (" ^ string_of_term t2 ^ ")"
@@ -181,7 +181,7 @@ let rec subst x t1 vars t2 = match t2 with
   (* x is not captured by this term, however y is among the variables
      that occur in t1 and therefore we have to avoid having unbound occurrences of x
      turn into terms that are partially bounded by y. *)
-  | Abs(y,t3) when List.exists (fun z -> z=y) (vars_of_term t1)  ->
+  | Abs(y,t3) when is_free y t1  ->
       print_endline ("DAS RITE! " ^ (string_of_term t1) ^ " captured by " ^ (string_of_term (Abs(y,t3))));
       let fresh_name = "x"^(string_of_int vars) in
       let renamed = rename y fresh_name t3 in
@@ -267,5 +267,5 @@ let trace n t =
       t'::(trace' (n-1) vars' t'))
     with _ -> [t]
   in let vars = max_nat t 
-  in trace' n vars t
+  in t::(trace' n vars t)
 ;;
