@@ -60,6 +60,8 @@ expr:
 cmd:
   | SKIP; { Skip }
   | x = VAR; ASSIGN; e = expr; { Assign(x, e) }
-  | c1 = cmd; SEMICOLON; c2 = cmd; { Seq(c1,c2) }
   | IF; e = expr; THEN; c1 = cmd; ELSE; c2 = cmd; { If(e, c1, c2) }
   | WHILE; e = expr; DO; c = cmd; { While(e, c) }
+  | c1 = cmd; SEMICOLON; c2 = cmd; { Seq(c1,c2) }
+  | c = cmd; SEMICOLON; { c }
+  | LPAREN; c = cmd; RPAREN; { c }
