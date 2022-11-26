@@ -32,10 +32,10 @@ open Ast
 %left ELSE DO
 %left ASSIGN
 %left AND OR
-%left EQUAL LESSEQUAL
 %left PLUS MINUS
 %left PRODUCT
 %left NOT
+%left EQUAL LESSEQUAL
 %%
 
 prog:
