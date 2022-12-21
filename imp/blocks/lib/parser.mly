@@ -26,6 +26,11 @@ open Ast
 %token DO
 %token SKIP
 
+%token BEGIN_BLOCK
+%token END_BLOCK
+%token INT_TYPE;
+%token BOOL_TYPE;
+
 %start <cmd> prog
 
 %left SEMICOLON
@@ -57,6 +62,13 @@ expr:
   | e1 = expr; LESSEQUAL; e2 = expr; { Leq(e1, e2) }
   | LPAREN; e = expr; RPAREN; { e }
 
+decl:
+  | INT_TYPE; x = VAR; SEMICOLON; d = decl; { IntVar(x, d) }
+  | INT_TYPE; x = VAR; SEMICOLON; { IntVar(x, EmptyDecl) }
+
+  | BOOL_TYPE; x = VAR; SEMICOLON; d = decl; { BoolVar(x, d) }
+  | BOOL_TYPE; x = VAR; SEMICOLON; { BoolVar(x, EmptyDecl) }
+
 cmd:
   | SKIP; { Skip }
   | x = VAR; ASSIGN; e = expr; { Assign(x, e) }
@@ -65,3 +77,6 @@ cmd:
   | c1 = cmd; SEMICOLON; c2 = cmd; { Seq(c1,c2) }
   | c = cmd; SEMICOLON; { c }
   | LPAREN; c = cmd; RPAREN; { c }
+
+  | BEGIN_BLOCK; c = cmd; END_BLOCK; { Decl(EmptyDecl, c) }
+  | BEGIN_BLOCK; d = decl; c = cmd; END_BLOCK; { Decl(d, c) }

@@ -31,6 +31,12 @@ rule read =
   | ":=" { ASSIGN }
   | "=" { EQUAL }
   | ";" { SEMICOLON }
+
+  | "{" { BEGIN_BLOCK }
+  | "}" { END_BLOCK }
+  | "int" { INT_TYPE }
+  | "bool" { BOOL_TYPE }
+
   | num { NUM (int_of_string (Lexing.lexeme lexbuf)) }
   | id { VAR (Lexing.lexeme lexbuf) }
   | eof { EOF }
